@@ -4,13 +4,13 @@ import dlib
 import time
 import sys
 
-def detectFaceDlibHog(detector, frame, inHeight=300, inWidth=0):
 
+def detectFaceDlibHog(detector, frame, inHeight=300, inWidth=0):
     frameDlibHog = frame.copy()
     frameHeight = frameDlibHog.shape[0]
     frameWidth = frameDlibHog.shape[1]
     if not inWidth:
-        inWidth = int((frameWidth / frameHeight)*inHeight)
+        inWidth = int((frameWidth / frameHeight) * inHeight)
 
     scaleHeight = frameHeight / inHeight
     scaleWidth = frameWidth / inWidth
@@ -22,14 +22,15 @@ def detectFaceDlibHog(detector, frame, inHeight=300, inWidth=0):
     print(frameWidth, frameHeight, inWidth, inHeight)
     bboxes = []
     for faceRect in faceRects:
-
-        cvRect = [int(faceRect.left()*scaleWidth), int(faceRect.top()*scaleHeight),
-                  int(faceRect.right()*scaleWidth), int(faceRect.bottom()*scaleHeight) ]
+        cvRect = [int(faceRect.left() * scaleWidth), int(faceRect.top() * scaleHeight),
+                  int(faceRect.right() * scaleWidth), int(faceRect.bottom() * scaleHeight)]
         bboxes.append(cvRect)
-        cv2.rectangle(frameDlibHog, (cvRect[0], cvRect[1]), (cvRect[2], cvRect[3]), (0, 255, 0), int(round(frameHeight/150)), 4)
+        cv2.rectangle(frameDlibHog, (cvRect[0], cvRect[1]), (cvRect[2], cvRect[3]), (0, 255, 0),
+                      int(round(frameHeight / 150)), 4)
     return frameDlibHog, bboxes
 
-if __name__ == "__main__" :
+
+if __name__ == "__main__":
     hogFaceDetector = dlib.get_frontal_face_detector()
 
     source = 0
@@ -39,18 +40,19 @@ if __name__ == "__main__" :
     cap = cv2.VideoCapture(source)
     hasFrame, frame = cap.read()
 
-    vid_writer = cv2.VideoWriter('output-hog-{}.avi'.format(str(source).split(".")[0]),cv2.VideoWriter_fourcc('M','J','P','G'), 15, (frame.shape[1],frame.shape[0]))
+    vid_writer = cv2.VideoWriter('output-hog-{}.avi'.format(str(source).split(".")[0]),
+                                 cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 15, (frame.shape[1], frame.shape[0]))
 
     frame_count = 0
     tt_dlibHog = 0
-    while(1):
+    while 1:
         hasFrame, frame = cap.read()
         if not hasFrame:
             break
         frame_count += 1
 
         t = time.time()
-        outDlibHog, bboxes = detectFaceDlibHog(hogFaceDetector,frame)
+        outDlibHog, bboxes = detectFaceDlibHog(hogFaceDetector, frame)
         tt_dlibHog += time.time() - t
         fpsDlibHog = frame_count / tt_dlibHog
 
